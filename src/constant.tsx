@@ -10,6 +10,6 @@ export const RENTAL_DURATION = [
 
 export const HOLDER_COUNTS = ["500", "1000", "1500", "2000"];
 
-const IS_PROUDCTION = false;
+const IS_PROUDCTION = true;
 
 export const SOL_BOOSTER_SERVER_URL = IS_PROUDCTION ? "https://sol-arba-tg-server.onrender.com" : "http://localhost:3001"
