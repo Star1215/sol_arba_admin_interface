@@ -13,7 +13,7 @@ import Alert from "@mui/material/Alert";
 import WarningIcon from "@mui/icons-material/Warning";
 import RentalFee from "./RentalFee";
 import HolderFee from "./HolderFee";
-import { SOL_BOOSTER_SERVER_URL } from "./constant";
+import { PASSWORD, SOL_BOOSTER_SERVER_URL } from "./constant";
 
 function Copyright() {
   return (
@@ -38,7 +38,8 @@ export default function App() {
   const [rentalFees, setRentalFees] = useState([]);
   const [holderFees, setHolderFees] = useState([]);
   const [isPending, setIsPending] = useState(false);
-
+  const [password, setPassword] = useState("");
+  const [isPassed, setIsPassed] = useState(false);
   const handleWallet = async () => {
     setIsPending(true);
     const payload = {
@@ -58,6 +59,17 @@ export default function App() {
     }
   };
 
+  const handlePassword = async () => {
+    if(password === PASSWORD) {
+      setIsPassed(true);
+      window.alert("Entered!");
+      return;
+    } else {
+      setIsPassed(false);
+      window.alert("Wrong Password!");
+      return;
+    }
+  }
   const handleSetIsPending = (value: boolean) => {
     setIsPending(value); // Toggle isPending state
   };
@@ -76,7 +88,7 @@ export default function App() {
       }
     };
     fetchPlatformInfo();
-  }, [isPending]);
+  }, [isPending, isPassed]);
   return (
     <Container>
       <Box sx={{ my: 4 }}>
@@ -86,49 +98,75 @@ export default function App() {
         {/* <ProTip /> */}
         {/* <Copyright /> */}
       </Box>
-      <Box>
-        <Stack direction="row" spacing={2} my={4} alignItems="center">
-          <Typography variant="h6">Platform Wallet</Typography>
-          <Box sx={{ width: 400, maxWidth: "100%" }}>
-            <TextField
-              fullWidth
-              label=""
-              id="fullWidth"
-              value={platformWallet}
-              onChange={(e) => setPlatformWallet(e.target.value)}
+      {isPassed && (
+        <Box>
+          <Stack direction="row" spacing={2} my={4} alignItems="center">
+            <Typography variant="h6">Platform Wallet</Typography>
+            <Box sx={{ width: 400, maxWidth: "100%" }}>
+              <TextField
+                fullWidth
+                label=""
+                id="fullWidth"
+                value={platformWallet}
+                onChange={(e) => setPlatformWallet(e.target.value)}
+              />
+            </Box>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleWallet();
+              }}
+            >
+              Set up
+            </Button>
+          </Stack>
+          {rentalFees.map((rental, index) => (
+            <RentalFee
+              value={rental}
+              index={index}
+              key={rental}
+              setIsPending={handleSetIsPending}
             />
-          </Box>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handleWallet();
-            }}
-          >
-            Set up
-          </Button>
-        </Stack>
-        {rentalFees.map((rental, index) => (
-          <RentalFee
-            value={rental}
-            index={index}
-            key={rental}
-            setIsPending={handleSetIsPending}
-          />
-        ))}
+          ))}
 
-        {/* Holder Boosting Fees */}
-        <Typography variant="h4" component="h1" sx={{ mt: 3, mb: 1 }}>
-          Holders Boosting Fee
-        </Typography>
-        {holderFees.map((holder, index) => (
-          <HolderFee
-            value={holder}
-            index={index}
-            key={holder}
-            setIsPending={handleSetIsPending}
-          />
-        ))}
-      </Box>
+          {/* Holder Boosting Fees */}
+          <Typography variant="h4" component="h1" sx={{ mt: 3, mb: 1 }}>
+            Holders Boosting Fee
+          </Typography>
+          {holderFees.map((holder, index) => (
+            <HolderFee
+              value={holder}
+              index={index}
+              key={holder}
+              setIsPending={handleSetIsPending}
+            />
+          ))}
+        </Box>
+      )}
+      {!isPassed && (
+        <>
+          <Stack direction="row" spacing={2} my={4} alignItems="center">
+            <Typography variant="h6">Password</Typography>
+            <Box sx={{ width: 400, maxWidth: "100%" }}>
+              <TextField
+                fullWidth
+                label=""
+                id="fullWidth"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Box>
+            <Button
+              variant="contained"
+              onClick={() => {
+                handlePassword();
+              }}
+            >
+              Enter
+            </Button>
+          </Stack>
+        </>
+      )}
     </Container>
   );
 }
